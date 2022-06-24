@@ -1,0 +1,35 @@
+/* Keyframes */
+@keyframes heigthInFromTop {
+    from {
+        height: 0;
+    }
+    to {
+        height: 100%;
+    }
+}
+
+@keyframes slideInFromBottom {
+    from {
+        transform: translateY(1000px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+@keyframes slideInFromTop {
+    from {
+        transform: translateY(-100px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadebackground {
+    from {
+        background-color: #000000;
+    }
+    to {
+        background-color: none;
+    }
+}

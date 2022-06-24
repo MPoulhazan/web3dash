@@ -1,0 +1,23 @@
+@font-face {
+  font-family: 'bebas';
+  src: url('./BebasNeue-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'shakra';
+  src: url('./ChakraPetch-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'stick';
+  src: url('./StickNoBills-VariableFont_wght.ttf') format('truetype');
+}
+
+p,
+div,
+h1,
+h2,
+h3,
+span,
+input,
+button {
+  font-family: 'shakra', cursive, Arial, Helvetica, sans-serif !important;
+}
