@@ -11,7 +11,6 @@ const AccountBalance = () => {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [chainId, setChainId] = useState('');
-  const [address, setAddress] = useState<string>('');
   const [balances, setBalances] = useState<Balance[]>([]);
   const destroy$ = new Subject<boolean>();
 
@@ -48,7 +47,7 @@ const AccountBalance = () => {
         );
       },
       (error) => {
-        console.log(error);
+        console.error(error);
         setIsLoaded(true);
         setError(error);
       }
@@ -123,21 +122,37 @@ const AccountBalance = () => {
   };
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', hide: true, flex: 1 },
-    { field: 'contract_name', headerName: 'Contract name', flex: 1 },
-    { field: 'contract_ticker_symbol', headerName: 'Symbol', flex: 1 },
     {
       field: 'logo_url',
       headerName: 'Logo',
       type: 'string',
-      flex: 1
+      flex: 1,
+      renderCell: (params) => {
+        return (
+          <Box display="flex">
+            <img
+              width="32px"
+              src={params.value}
+              alt=""
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null;
+                currentTarget.src =
+                  '/static/images/placeholders/logo/crypto-default.png';
+              }}
+            />
+          </Box>
+        );
+      }
     },
+    { field: 'id', headerName: 'ID', hide: true },
+    { field: 'contract_name', headerName: 'Contract name', flex: 1 },
+    { field: 'contract_ticker_symbol', headerName: 'Symbol', flex: 1 },
     {
       field: 'balance',
       headerName: 'Balance',
       description: 'Balance in USD',
       type: 'number',
-      flex: 1
+      flex: 2
     }
   ];
 

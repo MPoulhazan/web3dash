@@ -2,7 +2,6 @@ import {
   INVALID_TOKEN_MSG as INVALID_KEY_MSG,
   UNKNOWN_ERROR_MSG
 } from 'src/models/Constants.model';
-import { ChainHttpResponse } from 'src/models/ChainHttpResponse.model';
 import { HttpError } from 'src/models/HttpError.model';
 import { BalanceHttpResponse } from 'src/models/BalanceHttpResponse.model';
 

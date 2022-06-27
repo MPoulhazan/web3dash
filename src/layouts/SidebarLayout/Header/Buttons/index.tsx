@@ -30,7 +30,9 @@ function HeaderButtons() {
 
   return (
     <Box sx={{ mr: 1 }} display="flex" alignItems="center">
-      <Typography>{address}</Typography>
+      <Typography sx={{ display: { xs: 'none', md: 'block' } }}>
+        {address}
+      </Typography>
       <HeaderSearch />
     </Box>
   );

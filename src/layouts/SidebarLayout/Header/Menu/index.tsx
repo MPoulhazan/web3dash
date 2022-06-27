@@ -84,7 +84,7 @@ function HeaderMenu() {
         if (!chainId) setChaindId(result.data.items[0].name);
       },
       (error) => {
-        console.log(error);
+        console.error(error);
         setIsLoaded(true);
         setError(error);
       }
