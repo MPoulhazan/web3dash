@@ -209,7 +209,7 @@ function SidebarMenu() {
           component="div"
           subheader={
             <ListSubheader component="div" disableSticky>
-              Management
+              Transactions
             </ListSubheader>
           }
         >
