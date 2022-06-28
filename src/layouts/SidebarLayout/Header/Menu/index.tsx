@@ -12,6 +12,9 @@ import { styled } from '@mui/material/styles';
 import { getAllChains } from 'src/shared/service/base.service';
 import { ChainPayload } from 'src/models/ChainPayload.model';
 import { dataService } from 'src/shared/service/data.service';
+import { HttpError } from 'src/models/HttpError.model';
+import Status500 from 'src/content/pages/Status/Status500';
+import { Navigate } from 'react-router';
 
 const ListWrapper = styled(Box)(
   ({ theme }) => `
@@ -68,7 +71,7 @@ function HeaderMenu() {
   const ref = useRef<any>(null);
   const [chainId, setChaindId] = useState<string>('');
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [error, setError] = useState<string>(null);
+  const [error, setError] = useState<HttpError>(null);
   const [chains, setChains] = useState<ChainPayload>(null);
 
   useEffect(() => {
@@ -104,30 +107,34 @@ function HeaderMenu() {
 
   return (
     <>
-      <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="demo-multiple-name-label">Chain</InputLabel>
-        <Select
-          labelId="demo-multiple-name-label"
-          id="demo-multiple-name"
-          value={chainId}
-          onChange={handleChange}
-          input={<OutlinedInput label="Chain" />}
-        >
-          {!!chains &&
-            chains.items.map((chain) => (
-              <MenuItem key={chain.chain_id} value={chain.name}>
-                <Box display="flex" alignItems="center">
-                  <img width="15px" src={chain.logo_url} />
-                  <span
-                    style={{ marginLeft: '5px', textTransform: 'uppercase' }}
-                  >
-                    {chain.name}
-                  </span>
-                </Box>
-              </MenuItem>
-            ))}
-        </Select>
-      </FormControl>
+      {!error ? (
+        <FormControl sx={{ m: 1, width: 300 }}>
+          <InputLabel id="demo-multiple-name-label">Chain</InputLabel>
+          <Select
+            labelId="demo-multiple-name-label"
+            id="demo-multiple-name"
+            value={chainId}
+            onChange={handleChange}
+            input={<OutlinedInput label="Chain" />}
+          >
+            {!!chains &&
+              chains.items.map((chain) => (
+                <MenuItem key={chain.chain_id} value={chain.name}>
+                  <Box display="flex" alignItems="center">
+                    <img width="15px" src={chain.logo_url} />
+                    <span
+                      style={{ marginLeft: '5px', textTransform: 'uppercase' }}
+                    >
+                      {chain.name}
+                    </span>
+                  </Box>
+                </MenuItem>
+              ))}
+          </Select>
+        </FormControl>
+      ) : (
+        <Navigate to="/status/500" replace />
+      )}
     </>
   );
 }

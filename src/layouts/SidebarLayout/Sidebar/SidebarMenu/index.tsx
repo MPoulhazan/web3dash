@@ -175,7 +175,7 @@ function SidebarMenu() {
                   to="/overview"
                   startIcon={<DesignServicesTwoToneIcon />}
                 >
-                  Overview
+                  Intro
                 </Button>
               </ListItem>
             </List>

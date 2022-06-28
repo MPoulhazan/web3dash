@@ -3,11 +3,11 @@ import {
   UNKNOWN_ERROR_MSG
 } from 'src/models/Constants.model';
 import { HttpError } from 'src/models/HttpError.model';
-import { BalanceHttpResponse } from 'src/models/BalanceHttpResponse.model';
+import { TransactionHttpResponse } from 'src/models/TransactionHttpResponse.model';
 
 const COVALENT_API_URL = 'https://api.covalenthq.com/v1/';
 const COVALENT_ADDRESS_API_PATH = 'address/';
-const COVALENT_BALANCES_API_PATH = 'balances_v2/';
+const COVALENT_TRANSACTIONS_API_PATH = 'transactions_v2/';
 const COVALENT_API_KEY = process.env.REACT_APP_COVALENT_API_KEY;
 
 const params = new URLSearchParams({
@@ -15,16 +15,16 @@ const params = new URLSearchParams({
   key: COVALENT_API_KEY
 });
 
-export const getTokenBalance = (
+export const getTokenTransaction = (
   chainId: string,
   address: string
-): Promise<BalanceHttpResponse> => {
+): Promise<TransactionHttpResponse> => {
   return fetch(
     COVALENT_API_URL +
       `${chainId}/` +
       COVALENT_ADDRESS_API_PATH +
       `${address}/` +
-      COVALENT_BALANCES_API_PATH +
+      COVALENT_TRANSACTIONS_API_PATH +
       `?${params}`
   ).then((response: any) => {
     if (response.status >= 200 && response.status < 204) {

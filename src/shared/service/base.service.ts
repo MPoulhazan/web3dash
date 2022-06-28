@@ -1,4 +1,3 @@
-import { ChainPayload } from 'src/models/ChainPayload.model';
 import {
   INVALID_TOKEN_MSG as INVALID_KEY_MSG,
   UNKNOWN_ERROR_MSG
@@ -8,7 +7,7 @@ import { HttpError } from 'src/models/HttpError.model';
 
 const COVALENT_API_URL = 'https://api.covalenthq.com/v1/';
 const COVALENT_CHAIN_API_PATH = 'chains/';
-const COVALENT_API_KEY = 'ckey_64ffdaea1cae48b7bbf9b7580a6';
+const COVALENT_API_KEY = process.env.REACT_APP_COVALENT_API_KEY;
 
 const params = new URLSearchParams({
   'quote-currency': 'USD',
