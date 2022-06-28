@@ -87,15 +87,15 @@ const routes: RouteObject[] = [
     ]
   },
   {
-    path: 'management',
+    path: 'transactions',
     element: <SidebarLayout />,
     children: [
       {
         path: '',
-        element: <Navigate to="transactions" replace />
+        element: <Navigate to="transactions-list" replace />
       },
       {
-        path: 'transactions',
+        path: 'transactions-list',
         element: <Transactions />
       }
     ]
