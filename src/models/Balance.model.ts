@@ -1,3 +1,5 @@
+import { formatBalance } from 'src/shared/service/utils.service';
+
 export interface BalancePayload {
   balance: string;
   balance_24h: string;
@@ -23,6 +25,7 @@ export interface Balance {
   contract_ticker_symbol: string;
   logo_url: string;
   quote_rate: number;
+  quote: string;
 }
 
 export const balanceFromDTO = (
@@ -31,10 +34,14 @@ export const balanceFromDTO = (
 ): Balance => {
   return {
     id,
-    balance: balancePayload.balance,
+    balance: formatBalance(
+      balancePayload.balance,
+      balancePayload.contract_decimals
+    ),
     contract_name: balancePayload.contract_name,
     contract_ticker_symbol: balancePayload.contract_ticker_symbol,
     logo_url: balancePayload.logo_url,
+    quote: '' + balancePayload.quote,
     quote_rate: balancePayload.quote_rate
   };
 };

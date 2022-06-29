@@ -12,6 +12,11 @@ import {
   styled
 } from '@mui/material';
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
+import { useEffect, useState } from 'react';
+import { combineLatest, Subject } from 'rxjs';
+import { Balance, balanceFromDTO } from 'src/models/Balance.model';
+import { dataService } from 'src/shared/service/data.service';
+import { getTokenBalance } from 'src/shared/service/balance.service';
 
 const AvatarWrapper = styled(Avatar)(
   ({ theme }) => `
@@ -75,6 +80,53 @@ const CardAddAction = styled(Card)(
 );
 
 function Wallets() {
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [chainId, setChainId] = useState('');
+  const [balances, setBalances] = useState<Balance[]>([]);
+  const destroy$ = new Subject<boolean>();
+
+  useEffect(() => {
+    getParamsAndCallApi();
+  }, []);
+
+  // Unmount
+  useEffect(
+    () => () => {
+      destroy$.next(true);
+    },
+    []
+  );
+
+  const getParamsAndCallApi = () => {
+    combineLatest([
+      dataService.getChainData(),
+      dataService.getAddressData()
+    ]).subscribe((value) => {
+      const [chainId, address] = [...value];
+      loadTokenBalance(chainId, address);
+    });
+  };
+
+  const loadTokenBalance = (chainId: string, address: string) => {
+    getTokenBalance(chainId, address).then(
+      (result) => {
+        setIsLoaded(true);
+        setBalances(
+          result.data.items
+            .map((bl, idx) => balanceFromDTO(bl, idx))
+            .sort((a, b) => parseInt(a.balance) - parseInt(b.balance))
+            .slice(0, 4)
+        );
+      },
+      (error) => {
+        console.error(error);
+        setIsLoaded(true);
+        setError(error);
+      }
+    );
+  };
+
   return (
     <>
       <Box
@@ -85,135 +137,50 @@ function Wallets() {
           pb: 3
         }}
       >
-        <Typography variant="h3">Wallets</Typography>
-        <Button
-          size="small"
-          variant="outlined"
-          startIcon={<AddTwoToneIcon fontSize="small" />}
-        >
-          Add new wallet
-        </Button>
+        <Typography variant="h3">Favorites Wallets</Typography>
       </Box>
       <Grid container spacing={3}>
-        <Grid xs={12} sm={6} md={3} item>
-          <Card
-            sx={{
-              px: 1
-            }}
-          >
-            <CardContent>
-              <AvatarWrapper>
-                <img
-                  alt="BTC"
-                  src="/static/images/placeholders/logo/bitcoin.png"
-                />
-              </AvatarWrapper>
-              <Typography variant="h5" noWrap>
-                Bitcoin
-              </Typography>
-              <Typography variant="subtitle1" noWrap>
-                BTC
-              </Typography>
-              <Box
-                sx={{
-                  pt: 3
-                }}
-              >
-                <Typography variant="h3" gutterBottom noWrap>
-                  $3,586.22
+        {balances.map((bl, i) => (
+          <Grid key={i} xs={12} sm={6} md={3} item>
+            <Card
+              sx={{
+                px: 1
+              }}
+            >
+              <CardContent>
+                <AvatarWrapper>
+                  <img
+                    alt="BTC"
+                    src={bl.logo_url}
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null;
+                      currentTarget.src =
+                        '/static/images/placeholders/logo/crypto-default.png';
+                    }}
+                  />
+                </AvatarWrapper>
+                <Typography variant="h5" noWrap>
+                  {bl.contract_name}
                 </Typography>
-                <Typography variant="subtitle2" noWrap>
-                  1.25843 BTC
+                <Typography variant="subtitle1" noWrap>
+                  {bl.contract_ticker_symbol}
                 </Typography>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid xs={12} sm={6} md={3} item>
-          <Card
-            sx={{
-              px: 1
-            }}
-          >
-            <CardContent>
-              <AvatarWrapper>
-                <img
-                  alt="Ripple"
-                  src="/static/images/placeholders/logo/ripple.png"
-                />
-              </AvatarWrapper>
-              <Typography variant="h5" noWrap>
-                Ripple
-              </Typography>
-              <Typography variant="subtitle1" noWrap>
-                XRP
-              </Typography>
-              <Box
-                sx={{
-                  pt: 3
-                }}
-              >
-                <Typography variant="h3" gutterBottom noWrap>
-                  $586.83
-                </Typography>
-                <Typography variant="subtitle2" noWrap>
-                  5,783 XRP
-                </Typography>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid xs={12} sm={6} md={3} item>
-          <Card
-            sx={{
-              px: 1
-            }}
-          >
-            <CardContent>
-              <AvatarWrapper>
-                <img
-                  alt="Cardano"
-                  src="/static/images/placeholders/logo/cardano.png"
-                />
-              </AvatarWrapper>
-              <Typography variant="h5" noWrap>
-                Cardano
-              </Typography>
-              <Typography variant="subtitle1" noWrap>
-                ADA
-              </Typography>
-              <Box
-                sx={{
-                  pt: 3
-                }}
-              >
-                <Typography variant="h3" gutterBottom noWrap>
-                  $54,985.00
-                </Typography>
-                <Typography variant="subtitle2" noWrap>
-                  34,985 ADA
-                </Typography>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid xs={12} sm={6} md={3} item>
-          <Tooltip arrow title="Click to add a new wallet">
-            <CardAddAction>
-              <CardActionArea
-                sx={{
-                  px: 1
-                }}
-              >
-                <CardContent>
-                  <AvatarAddWrapper>
-                    <AddTwoToneIcon fontSize="large" />
-                  </AvatarAddWrapper>
-                </CardContent>
-              </CardActionArea>
-            </CardAddAction>
-          </Tooltip>
-        </Grid>
+                <Box
+                  sx={{
+                    pt: 3
+                  }}
+                >
+                  <Typography variant="h3" gutterBottom noWrap>
+                    {bl.balance}
+                  </Typography>
+                  <Typography variant="subtitle2" noWrap>
+                    {bl.quote_rate || 0}$
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
     </>
   );

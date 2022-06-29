@@ -16,10 +16,10 @@ function RecentOrders() {
     useState<BlockTransactionWithLogEvents[]>([]);
 
   useEffect(() => {
-    getParamsAndCallApi();
+    subscribeParamsUpdate();
   }, []);
 
-  const getParamsAndCallApi = () => {
+  const subscribeParamsUpdate = () => {
     combineLatest([
       dataService.getChainData(),
       dataService.getAddressData()

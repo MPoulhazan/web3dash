@@ -19,6 +19,10 @@ export const getTokenBalance = (
   chainId: string,
   address: string
 ): Promise<BalanceHttpResponse> => {
+  if (!chainId || !address) {
+    console.log('Empty params for balance API, no call will be done');
+    return;
+  }
   return fetch(
     COVALENT_API_URL +
       `${chainId}/` +

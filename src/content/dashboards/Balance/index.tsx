@@ -3,6 +3,7 @@ import { Container, Grid, useTheme } from '@mui/material';
 import Footer from 'src/components/Footer';
 
 import AccountBalance from './AccountBalance';
+import Wallets from './Wallets';
 
 function DashboardBalance() {
   const theme = useTheme();
@@ -21,8 +22,11 @@ function DashboardBalance() {
           spacing={4}
         >
           <Grid item xs={12}>
-            <AccountBalance />
+            <Wallets />
           </Grid>
+          <Grid item xs={12}>
+            <AccountBalance />
+          </Grid>{' '}
         </Grid>
       </Container>
       <Footer />

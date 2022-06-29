@@ -2,11 +2,21 @@
 
 See live demo <a href="https://web3dash.web.app/dashboards/balance" target="_blank">here</a>!
 
-Web3dash is a dashboard viewer build with React.
+Web3dash is a dashboard viewer build with React and plugged on Covalent APIs.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 The template is inspired from BloomUI and build with Material UI.
+
+### Features
+
+The V1 of dashboard shows multiple indicators :
+
+- Top 4 cryptos
+- Balances for a given address on selected chain
+- Transactions tab for a given address on selected chain
+
+Graphs will be added in the V1.1.
 
 ## Available Scripts
 
