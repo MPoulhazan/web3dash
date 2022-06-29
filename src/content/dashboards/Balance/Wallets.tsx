@@ -1,5 +1,4 @@
 import {
-  Button,
   Card,
   Grid,
   Box,
@@ -7,16 +6,9 @@ import {
   Typography,
   Avatar,
   alpha,
-  Tooltip,
-  CardActionArea,
   styled
 } from '@mui/material';
-import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
-import { useEffect, useState } from 'react';
-import { combineLatest, Subject } from 'rxjs';
-import { Balance, balanceFromDTO } from 'src/models/Balance.model';
-import { dataService } from 'src/shared/service/data.service';
-import { getTokenBalance } from 'src/shared/service/balance.service';
+import { Balance } from 'src/models/Balance.model';
 
 const AvatarWrapper = styled(Avatar)(
   ({ theme }) => `
@@ -46,87 +38,11 @@ const AvatarWrapper = styled(Avatar)(
 `
 );
 
-const AvatarAddWrapper = styled(Avatar)(
-  ({ theme }) => `
-        background: ${theme.colors.alpha.black[10]};
-        color: ${theme.colors.primary.main};
-        width: ${theme.spacing(8)};
-        height: ${theme.spacing(8)};
-`
-);
+interface Props {
+  balances: Balance[];
+}
 
-const CardAddAction = styled(Card)(
-  ({ theme }) => `
-        border: ${theme.colors.primary.main} dashed 1px;
-        height: 100%;
-        color: ${theme.colors.primary.main};
-        transition: ${theme.transitions.create(['all'])};
-        
-        .MuiCardActionArea-root {
-          height: 100%;
-          justify-content: center;
-          align-items: center;
-          display: flex;
-        }
-        
-        .MuiTouchRipple-root {
-          opacity: .2;
-        }
-        
-        &:hover {
-          border-color: ${theme.colors.alpha.black[70]};
-        }
-`
-);
-
-function Wallets() {
-  const [error, setError] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [chainId, setChainId] = useState('');
-  const [balances, setBalances] = useState<Balance[]>([]);
-  const destroy$ = new Subject<boolean>();
-
-  useEffect(() => {
-    getParamsAndCallApi();
-  }, []);
-
-  // Unmount
-  useEffect(
-    () => () => {
-      destroy$.next(true);
-    },
-    []
-  );
-
-  const getParamsAndCallApi = () => {
-    combineLatest([
-      dataService.getChainData(),
-      dataService.getAddressData()
-    ]).subscribe((value) => {
-      const [chainId, address] = [...value];
-      loadTokenBalance(chainId, address);
-    });
-  };
-
-  const loadTokenBalance = (chainId: string, address: string) => {
-    getTokenBalance(chainId, address).then(
-      (result) => {
-        setIsLoaded(true);
-        setBalances(
-          result.data.items
-            .map((bl, idx) => balanceFromDTO(bl, idx))
-            .sort((a, b) => parseInt(a.balance) - parseInt(b.balance))
-            .slice(0, 4)
-        );
-      },
-      (error) => {
-        console.error(error);
-        setIsLoaded(true);
-        setError(error);
-      }
-    );
-  };
-
+function Wallets(props: Props) {
   return (
     <>
       <Box
@@ -137,10 +53,10 @@ function Wallets() {
           pb: 3
         }}
       >
-        <Typography variant="h3">Favorites Wallets</Typography>
+        <Typography variant="h3">Top 4 Wallets</Typography>
       </Box>
       <Grid container spacing={3}>
-        {balances.map((bl, i) => (
+        {props.balances.slice(0, 4).map((bl, i) => (
           <Grid key={i} xs={12} sm={6} md={3} item>
             <Card
               sx={{
@@ -150,7 +66,7 @@ function Wallets() {
               <CardContent>
                 <AvatarWrapper>
                   <img
-                    alt="BTC"
+                    alt={bl.contract_name}
                     src={bl.logo_url}
                     onError={({ currentTarget }) => {
                       currentTarget.onerror = null;
@@ -171,7 +87,7 @@ function Wallets() {
                   }}
                 >
                   <Typography variant="h3" gutterBottom noWrap>
-                    {bl.balance}
+                    {bl.quote_human_redeable + '$'}
                   </Typography>
                   <Typography variant="subtitle2" noWrap>
                     {bl.quote_rate || 0}$

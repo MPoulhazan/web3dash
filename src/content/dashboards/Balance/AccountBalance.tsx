@@ -1,58 +1,19 @@
 import { Card, Box, Grid, Typography, useTheme } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridComparatorFn } from '@mui/x-data-grid';
 import type { ApexOptions } from 'apexcharts';
 import { useEffect, useState } from 'react';
 import { dataService } from 'src/shared/service/data.service';
 import { combineLatest, forkJoin, Subject, takeUntil } from 'rxjs';
 import { getTokenBalance } from 'src/shared/service/balance.service';
 import { Balance, balanceFromDTO } from 'src/models/Balance.model';
+import { formatQuote } from 'src/shared/service/utils.service';
 
-const AccountBalance = () => {
-  const [error, setError] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
+interface Props {
+  balances: Balance[];
+}
+
+const AccountBalance = (props: Props) => {
   const [chainId, setChainId] = useState('');
-  const [balances, setBalances] = useState<Balance[]>([]);
-  const destroy$ = new Subject<boolean>();
-
-  const theme = useTheme();
-
-  useEffect(() => {
-    getParamsAndCallApi();
-  }, []);
-
-  // Unmount
-  useEffect(
-    () => () => {
-      destroy$.next(true);
-    },
-    []
-  );
-
-  const getParamsAndCallApi = () => {
-    combineLatest([
-      dataService.getChainData(),
-      dataService.getAddressData()
-    ]).subscribe((value) => {
-      const [chainId, address] = [...value];
-      loadTokenBalance(chainId, address);
-    });
-  };
-
-  const loadTokenBalance = (chainId: string, address: string) => {
-    getTokenBalance(chainId, address).then(
-      (result) => {
-        setIsLoaded(true);
-        setBalances(
-          result.data.items.map((bl, idx) => balanceFromDTO(bl, idx))
-        );
-      },
-      (error) => {
-        console.error(error);
-        setIsLoaded(true);
-        setError(error);
-      }
-    );
-  };
 
   const columns: GridColDef[] = [
     {
@@ -85,12 +46,23 @@ const AccountBalance = () => {
       headerName: 'Balance',
       description: 'Balance in USD',
       type: 'number',
-      flex: 2
+      flex: 2,
+      sortable: false
+    },
+    {
+      field: 'quote',
+      headerName: 'Amout',
+      description: 'Total amout in USD',
+      type: 'number',
+      flex: 1,
+      renderCell: (params) => {
+        return <b>{formatQuote(params.value) + '$'}</b>;
+      }
     }
   ];
 
   return (
-    balances && (
+    props.balances && (
       <Card>
         <Box p={4}>
           <Typography
@@ -102,7 +74,7 @@ const AccountBalance = () => {
             Account Balance {chainId}
           </Typography>
           <DataGrid
-            rows={balances}
+            rows={props.balances}
             columns={columns}
             pageSize={30}
             rowsPerPageOptions={[5]}

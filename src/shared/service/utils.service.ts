@@ -1,5 +1,5 @@
 export const formatBalance = (value: string, decimal: number): string => {
-  if (value === '0') return '0$';
+  if (value === '0') return '0';
 
   const dotPosition = value.length - decimal;
 
@@ -8,14 +8,14 @@ export const formatBalance = (value: string, decimal: number): string => {
       value.slice(0, dotPosition - 6) +
       '.' +
       value.slice(dotPosition - 6, dotPosition - 3) +
-      'M$'
+      'M'
     );
   } else if (dotPosition > 3) {
     return (
       value.slice(0, dotPosition - 3) +
       '.' +
       value.slice(dotPosition - 3, dotPosition) +
-      'K$'
+      'K'
     );
   }
 
@@ -23,7 +23,11 @@ export const formatBalance = (value: string, decimal: number): string => {
   return (
     value.slice(0, dotPosition) +
     '.' +
-    value.slice(dotPosition, dotPosition + 3) +
-    '$'
+    value.slice(dotPosition, dotPosition + 3)
   );
+};
+
+export const formatQuote = (quote: Number) => {
+  const quoteArr = ('' + quote).split('.');
+  return formatBalance(('' + quote).replace('.', ''), quoteArr[1]?.length || 0);
 };

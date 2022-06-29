@@ -88,15 +88,6 @@ function Status500() {
                   The server encountered an internal error and was not able to
                   complete your request
                 </Typography>
-                <LoadingButton
-                  onClick={handleClick}
-                  loading={pending}
-                  variant="outlined"
-                  color="primary"
-                  startIcon={<RefreshTwoToneIcon />}
-                >
-                  Refresh view
-                </LoadingButton>
                 <Button href="/overview" variant="contained" sx={{ ml: 1 }}>
                   Go back
                 </Button>
@@ -125,9 +116,6 @@ function Status500() {
                     Get all informations from Covalent's APIs on the same
                     dashboard
                   </TypographySecondary>
-                  <Button href="/overview" size="large" variant="contained">
-                    Overview
-                  </Button>
                 </Box>
               </Container>
             </GridWrapper>

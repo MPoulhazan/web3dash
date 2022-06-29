@@ -1,4 +1,4 @@
-import { formatBalance } from 'src/shared/service/utils.service';
+import { formatBalance, formatQuote } from 'src/shared/service/utils.service';
 
 export interface BalancePayload {
   balance: string;
@@ -25,7 +25,8 @@ export interface Balance {
   contract_ticker_symbol: string;
   logo_url: string;
   quote_rate: number;
-  quote: string;
+  quote: number;
+  quote_human_redeable?: string;
 }
 
 export const balanceFromDTO = (
@@ -41,7 +42,8 @@ export const balanceFromDTO = (
     contract_name: balancePayload.contract_name,
     contract_ticker_symbol: balancePayload.contract_ticker_symbol,
     logo_url: balancePayload.logo_url,
-    quote: '' + balancePayload.quote,
+    quote: balancePayload.quote,
+    quote_human_redeable: formatQuote(balancePayload.quote),
     quote_rate: balancePayload.quote_rate
   };
 };
